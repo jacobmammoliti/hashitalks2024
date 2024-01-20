@@ -21,7 +21,8 @@ resource "vault_database_secret_backend_role" "encryptah" {
 
   creation_statements = [
     "CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
-    "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";",
+    "GRANT CREATE ON SCHEMA public TO \"{{name}}\";",
+    "GRANT INSERT, SELECT, UPDATE ON TABLE public.Users TO \"{{name}}\";",
   ]
 }
 
@@ -30,7 +31,7 @@ resource "vault_mount" "transit" {
   type                      = "transit"
   default_lease_ttl_seconds = 3600
   max_lease_ttl_seconds     = 86400
-}
+} 
 
 resource "vault_transit_secret_backend_key" "aes256_key" {
   backend          = vault_mount.transit.path
