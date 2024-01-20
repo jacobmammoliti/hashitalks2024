@@ -19,12 +19,6 @@ from psycopg2 import Error as PostgresError, connect
 class Postgresql:
     """
     A class representing a connection to a PostgreSQL database.
-
-    Attributes:
-    - host (str): The host address of the database.
-    - database (str): The name of the database.
-    - username (str): The username for authentication.
-    - password (str): The password for authentication.
     """
 
     def __init__(self, host: str, database: str, username: str, password: str) -> None:
@@ -46,6 +40,9 @@ class Postgresql:
     def connect(self) -> None:
         """
         Connects to the PostgreSQL database using the provided credentials.
+
+        Raises:
+        - PostgresError: If the connection fails.
         """
         print(
             f"Connecting to database {self.database} on host {self.host} as user {self.username}"
@@ -67,9 +64,12 @@ class Postgresql:
         """
         Creates a new table in the database.
 
-        Parameters:
+        Args:
         - table_name (str): The name of the table.
         - columns (tuple): A tuple of column names and their data types.
+
+        Raises:
+        - PostgresError: If the table creation fails.
 
         Example:
         psql.create_table("users", ("name varchar(255)", "email varchar(255)"))
