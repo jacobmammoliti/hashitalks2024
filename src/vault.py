@@ -24,8 +24,8 @@ class Vault:
 
     def __init__(
         self,
-        host: str = "127.0.0.1:8200",
-        namespace: str = "default",
+        host: str = os.environ.get("VAULT_ADDR", "127.0.0.1:8200"),
+        namespace: str = os.environ.get("VAULT_NAMESPACE", "default"),
         role_id: str = os.environ.get("VAULT_ROLE_ID", None),
         secret_id: str = os.environ.get("VAULT_SECRET_ID", None),
     ) -> None:
@@ -33,8 +33,8 @@ class Vault:
         Initializes a new instance of the Vault class.
 
         Parameters:
-        - host (str): The host address of the Vault server. Defaults to "
-        - namespace (str): The namespace to operate within. Defaults to "default".
+        - host (str): The address of Vault. Default is the "VAULT_ADDR" env variable.
+        - namespace (str): The namespace to use. Default is the "VAULT_NAMESPACE" env variable.
         - role_id (str): Role ID for Vault. Default is the "VAULT_ROLE_ID" env variable.
         - secret_id (str): Secret ID for Vault. Default is the "VAULT_SECRET_ID" env variable.
         """
@@ -83,7 +83,10 @@ class Vault:
                 name=role, mount_point=mount_point
             )
             print(f"Successfully generated database credentials for {role}")
-            return {"username": credentials["data"]["username"], "password": credentials["data"]["password"]}
+            return {
+                "username": credentials["data"]["username"],
+                "password": credentials["data"]["password"],
+            }
         except exceptions.Forbidden as error:
             print(f"Unable to generate database credentials {error}")
             sys.exit(1)
