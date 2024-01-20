@@ -12,6 +12,7 @@ Functions:
 - retrieve_data: Retrieves data from a table in the database.
 """
 import sys
+import os
 from typing import List
 from psycopg2 import Error as PostgresError, connect
 
@@ -21,13 +22,19 @@ class Postgresql:
     A class representing a connection to a PostgreSQL database.
     """
 
-    def __init__(self, host: str, database: str, username: str, password: str) -> None:
+    def __init__(
+        self,
+        host: str = os.environ.get("PSQL_HOST", "127.0.0.1:5432"),
+        database: str = "postgres",
+        username: str = None,
+        password: str = None,
+    ) -> None:
         """
         Initializes a new instance of the Postgresql class.
 
         Parameters:
-        - host (str): The host address of the database.
-        - database (str): The name of the database.
+        - host (str): The address of the database. Default is the "PSQL_HOST" env variable.
+        - database (str): The name of the database. Default is "postgres".
         - username (str): The username for authentication.
         - password (str): The password for authentication.
         """
@@ -121,7 +128,7 @@ class Postgresql:
             print(f"Error while inserting data into table {table}: {error}")
             sys.exit(1)
 
-    def retrieve_data(self, table: str, column: str, value: str) -> List:
+    def retrieve_data(self, table: str, column: str = None, value: str = None) -> List:
         """
         Retrieves data from a table in the database.
 
@@ -136,7 +143,10 @@ class Postgresql:
         Example:
         psql.retrieve_data("users", "name", "John")
         """
-        sql_statement = f"SELECT * FROM {table} WHERE {column}='{value}';"
+        if column is None or value is None:
+            sql_statement = f"SELECT * FROM {table};"
+        else:
+            sql_statement = f"SELECT * FROM {table} WHERE {column}='{value}';"
 
         try:
             cursor = self.connection.cursor()
@@ -145,9 +155,7 @@ class Postgresql:
 
             self.connection.commit()
 
-            print(
-                f"Successfully retrieved data from table {table} with {column}={value}"
-            )
+            print(f"Successfully retrieved data from table {table}")
 
             return cursor.fetchall()
 
