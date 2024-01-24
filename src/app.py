@@ -48,9 +48,6 @@ def db_connect():
     return psql
 
 def main():
-    psql = db_connect()
-    psql.create_table("users", ("name varchar(255)", "email varchar(255)"))
-
     app.run(
         host=os.environ.get("FLASK_HOST", "127.0.0.1"),
         port=os.environ.get("FLASK_PORT", 5000),
