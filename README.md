@@ -66,3 +66,19 @@ secret_id = <sensitive>
 > Note: When using App Role authentication, the secret ID should be generated as close to usage as possible and should not be created this way via Terraform. I am creating it this way for demo purposes only.
 
 This role ID and secret ID will be used by the application to authenticate to Vault.
+
+The final step is to deploy the application which is run via Cloud Run. Switch into the app deployment directory (2-app_deployment) and populate the required variables in `terraform.tfvars`.
+
+```bash
+terraform init
+
+terraform apply
+```
+
+In this current environment, I cannot have public facing Cloud Run instances due to an organizaiton policy. If you face a similar restriction, you can set up a local proxy similar to below:
+
+```bash
+gcloud run services proxy encryptah --project int-hashitalks2024-8392 --region us-east1
+```
+
+This will set up a local proxy on `http://127.0.0.1:8080`.
