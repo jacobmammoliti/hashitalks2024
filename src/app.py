@@ -1,9 +1,11 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, flash, request, render_template
 from vault import Vault
 from postgres import Postgresql
 
 app = Flask(__name__)
+app.secret_key = "38b9f9e4e597f22afd5b711e23e99387"
+
 vault = Vault()
 vault.connect()
 
@@ -23,6 +25,7 @@ def index():
         psql.insert_data(
             "users", ("name", "email"), (request.form["name"], cipher_text)
         )
+        flash("Data inserted successfully into table users")
 
     return render_template("index.html")
 
@@ -46,6 +49,7 @@ def db_connect():
     psql.connect()
 
     return psql
+
 
 def main():
     app.run(

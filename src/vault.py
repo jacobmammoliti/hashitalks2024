@@ -58,7 +58,7 @@ class Vault:
 
             assert self.client.is_authenticated()
             print("Successfully authenticated with Vault")
-        except exceptions.InvalidRequest as error:
+        except (exceptions.Forbidden, exceptions.InternalServerError) as error:
             print(f"Unable to authenticate to Vault {error}")
             sys.exit(1)
 
@@ -77,6 +77,7 @@ class Vault:
 
         Raises:
         - exceptions.Forbidden: If the request to generate credentials is forbidden.
+        - exceptions.InternalServerError: If the request to generate credentials fails.
         """
         try:
             credentials = self.client.secrets.database.generate_credentials(
@@ -87,7 +88,7 @@ class Vault:
                 "username": credentials["data"]["username"],
                 "password": credentials["data"]["password"],
             }
-        except exceptions.Forbidden as error:
+        except (exceptions.Forbidden, exceptions.InternalServerError) as error:
             print(f"Unable to generate database credentials {error}")
             sys.exit(1)
 
@@ -123,7 +124,7 @@ class Vault:
                 mount_point=mount_point,
             )
             return ciphertext["data"]["ciphertext"]
-        except exceptions.Forbidden as error:
+        except (exceptions.Forbidden, exceptions.InternalServerError) as error:
             print(f"Unable to encrypt data {error}")
             sys.exit(1)
 
@@ -159,6 +160,6 @@ class Vault:
             return str(
                 base64.b64decode(decrypted_plaintext["data"]["plaintext"]), "utf-8"
             )
-        except exceptions.Forbidden as error:
+        except (exceptions.Forbidden, exceptions.InternalServerError) as error:
             print(f"Unable to decrypt data {error}")
             sys.exit(1)
