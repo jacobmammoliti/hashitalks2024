@@ -2,6 +2,17 @@
 
 This repository contains all the code used in my HashiTalks 2024 demo.
 
+## Disclaimer
+
+I do some pretty questionable things in this repository as far as security and "best practices" are concerned in exchange for ease of automating the demo. This includes:
+
+- Generating a Vault AppRole Secret ID early and through Terraform
+- Using the Vault root token to configure the Vault environment
+- Passing the AppRole Secret ID into Cloud Run through Terraform as an environment variable
+- Creating the users table in the SQL creation statement
+
+In addition to these things, I'm using AppRole to authenticate to Vault as opposed to GCP auth due to restrictions in the current environment that I'm running this in. The environment has an organizational policy in-place to stop the creation of service account keys (good practice) and because Vault is running in HCP, I cannot leverage IAM and a service account to broker the authentication the GCP auth method needs.
+
 ## Setting Up the Environment
 
 The environment for this demo comprises of two three components provisioned with Terraform:

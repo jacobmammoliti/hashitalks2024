@@ -5,5 +5,7 @@ module "project" {
   project_create = false
   services = [
     "artifactregistry.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "run.googleapis.com"
   ]
 }
